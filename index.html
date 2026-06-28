@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#111315">
+    <title>Редактор статьи</title>
+    <link rel="stylesheet" href="./src/styles.css">
+    <script async src="https://telegram.org/js/telegram-web-app.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <div class="fixed-header">
+        <header class="topbar">
+          <button class="icon-button" id="closeButton" type="button" title="Закрыть">
+            <span aria-hidden="true">×</span>
+          </button>
+          <div class="topbar__title">
+            <strong>Редактор</strong>
+            <span id="saveState">Локальный режим</span>
+          </div>
+          <button class="icon-button" id="previewToggle" type="button" title="Предпросмотр">
+            <span aria-hidden="true">□</span>
+          </button>
+        </header>
+
+        <section class="tabs" aria-label="Разделы редактора">
+          <button class="tab is-active" type="button" data-tab="edit">Текст</button>
+          <button class="tab" type="button" data-tab="media">Медиа</button>
+          <button class="tab" type="button" data-tab="buttons">Кнопки</button>
+        </section>
+      </div>
+
+      <div class="content-shell">
+        <form class="editor-form" id="editorForm">
+          <section class="tab-panel is-active" data-panel="edit">
+            <label class="field">
+              <span>Заголовок</span>
+              <input id="titleInput" name="title" type="text" autocomplete="off">
+            </label>
+
+            <section class="toolbar" aria-label="Форматирование">
+              <button type="button" class="tool-button" data-format="bold" title="Жирный"><b>B</b></button>
+              <button type="button" class="tool-button" data-format="strong" title="Очень жирный"><b>BB</b></button>
+              <button type="button" class="tool-button" data-format="italic" title="Курсив"><i>I</i></button>
+              <button type="button" class="tool-button" data-format="underline" title="Подчеркнутый"><u>U</u></button>
+              <button type="button" class="tool-button" data-format="strike" title="Зачеркнутый"><s>S</s></button>
+              <button type="button" class="tool-button" data-format="spoiler" title="Спойлер">▧</button>
+              <button type="button" class="tool-button" data-format="link" title="Ссылка">↗</button>
+              <button type="button" class="tool-button" data-format="quote" title="Цитата">❝</button>
+              <button type="button" class="tool-button" data-format="code" title="Код">{ }</button>
+            </section>
+
+            <label class="field">
+              <span>Текст публикации</span>
+              <div
+                class="text-editor"
+                id="bodyEditor"
+                contenteditable="true"
+                role="textbox"
+                aria-multiline="true"
+                spellcheck="true"
+              ></div>
+            </label>
+
+            <div class="source-box">
+              <div>
+                <span>Источник</span>
+                <a id="sourceLink" href="#" target="_blank" rel="noreferrer">не задан</a>
+              </div>
+              <button class="ghost-button" id="copySourceButton" type="button">Копировать</button>
+            </div>
+          </section>
+
+          <section class="tab-panel" data-panel="media">
+            <div class="segmented" role="group" aria-label="Тип медиа">
+              <button type="button" class="segment is-active" data-media-type="none">Нет</button>
+              <button type="button" class="segment" data-media-type="photo">Фото</button>
+              <button type="button" class="segment" data-media-type="video">Видео</button>
+              <button type="button" class="segment" data-media-type="url">URL</button>
+            </div>
+
+            <label class="field" id="mediaFileField">
+              <span>Файл</span>
+              <input id="mediaFileInput" name="mediaFile" type="file" accept="image/*,video/*">
+            </label>
+
+            <label class="field" id="mediaUrlField">
+              <span>Ссылка на медиа</span>
+              <input id="mediaUrlInput" name="mediaUrl" type="url" placeholder="https://">
+            </label>
+
+            <label class="switch-row">
+              <span>Спойлер для медиа</span>
+              <input id="mediaSpoilerInput" name="mediaSpoiler" type="checkbox">
+            </label>
+
+            <div class="media-preview" id="mediaPreview">
+              <span>Медиа не выбрано</span>
+            </div>
+          </section>
+
+          <section class="tab-panel" data-panel="buttons">
+            <div class="button-list" id="buttonList"></div>
+
+            <div class="button-builder">
+              <label class="field">
+                <span>Название кнопки</span>
+                <input id="buttonTitleInput" type="text" autocomplete="off">
+              </label>
+              <label class="field">
+                <span>Ссылка кнопки</span>
+                <input id="buttonUrlInput" type="url" placeholder="https://">
+              </label>
+              <button class="primary-button" id="addButtonLink" type="button">Добавить кнопку</button>
+            </div>
+          </section>
+        </form>
+
+        <aside class="preview-panel" id="previewPanel" aria-label="Предпросмотр">
+          <div class="phone-preview">
+            <div class="phone-preview__media" id="previewMedia"></div>
+            <h1 id="previewTitle"></h1>
+            <article id="previewBody"></article>
+            <div class="preview-source" id="previewSource"></div>
+            <div class="preview-buttons" id="previewButtons"></div>
+          </div>
+        </aside>
+
+      </div>
+
+      <footer class="bottom-actions">
+        <button class="secondary-button" id="aiButton" type="button">ИИ адаптация</button>
+        <button class="secondary-button" id="resetButton" type="button">Сброс</button>
+        <button class="primary-button" id="saveButton" type="button">Сохранить</button>
+      </footer>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="./src/editor.js?v=20260628"></script>
+  </body>
+</html>
